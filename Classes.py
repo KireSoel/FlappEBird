@@ -41,8 +41,11 @@ class Bird(pygame.sprite.Sprite):
         if self.gravity > 10:
             self.gravity = 10
 
-        if self.rect.bottom > 500:
-            self.rect.bottom = 500
+        if self.rect.top < 0:
+            self.rect.top = 0
+
+        if self.rect.bottom > 600:
+            self.rect.bottom = 600
 
         #Crash sound bool
         if self.bird_active == False and self.crash_bool == False:
@@ -92,7 +95,7 @@ class Pipe(pygame.sprite.Sprite):
 
         self.pipe_active = True
 
-        self.velocity = -5
+        self.velocity = -4
 
     def logic(self):
         if self.pipe_active:

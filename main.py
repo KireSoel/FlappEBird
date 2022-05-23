@@ -3,11 +3,13 @@ import random
 import pygame
 from sys import exit
 import Classes
+from pygame import mixer
 #//////////////////////////////////////
 
 
 def checkCollision():
     if pygame.sprite.spritecollide(bird.sprite, pipe_group, False): return True
+    if bird.sprites()[0].rect.bottom > 450: return True
 
 
 pygame.init()
@@ -41,6 +43,12 @@ gameEnd = False
 offset = 0
 font_text = "0"
 
+pipe_bool = False
+pipe_index = 0
+
+score = 0
+score_sfx = mixer.Sound("media/Score.mp3")
+
 while True:
     events = pygame.event.get()
     for event in events:
@@ -54,10 +62,22 @@ while True:
 
     font_surface = font.render(font_text, False, 'Black')
     font_rect = font_surface.get_rect(center=(CENTER[0], SCREEN_HEIGHT // 9))
+    font_text = str(score)
 
-    if len(bird) > 0 and len(pipe_group) > 0    :
-        if bird.sprites()[0].rect.left > pipe_group.sprites()[0].rect.left:
-            font_text = ":)"
+    # SCORE COUNTER  * NO LE MUEVAS :( * //////////////////////////////////////
+    if len(bird) > 0 and len(pipe_group) > 0:
+        if bird.sprites()[0].rect.left > pipe_group.sprites()[pipe_index].rect.left \
+                and bird.sprites()[0].rect.right < pipe_group.sprites()[pipe_index].rect.right and \
+                pipe_bool == False:
+            pipe_bool = True
+
+        elif pipe_bool and bird.sprites()[0].rect.right > pipe_group.sprites()[pipe_index].rect.right:
+            pipe_bool = False
+            score_sfx.play()
+            score += 1
+            if pipe_index == 0: pipe_index = 2
+    # //////////////////////////////////////////////////////////////
+
 
     screen.blit(BackGround_Surf, (0, 0))
 
