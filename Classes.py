@@ -25,7 +25,7 @@ class Bird(pygame.sprite.Sprite):
         self.gravity = 2
         self.image = self.bird_flapp[self.bird_index]
         self.image = pygame.transform.scale(self.image, (51, 36))
-        self.rect = self.image.get_rect(midbottom = (250, 100))
+        self.rect = self.image.get_rect(midbottom = (250, 175))
 
     def player_input(self, events):
         for event in events:
