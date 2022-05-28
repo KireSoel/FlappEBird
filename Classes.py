@@ -11,7 +11,8 @@ class Bird(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         mixer.music.load("media/NormalTheme.mp3")
-        mixer.music.play(-1)
+        mixer.music.set_volume(0.75)
+        # mixer.music.play(-1)
 
         bird_flapp1 = pygame.image.load("graphics/FlappE_1.png").convert_alpha()
         bird_flapp2 = pygame.image.load("graphics/FlappE_2.png").convert_alpha()
@@ -43,6 +44,7 @@ class Bird(pygame.sprite.Sprite):
 
         if self.rect.top < 0:
             self.rect.top = 0
+            self.gravity = 0
 
         if self.rect.bottom > 600:
             self.rect.bottom = 600
@@ -78,7 +80,7 @@ class Bird(pygame.sprite.Sprite):
 
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self, orientation, offset):
+    def __init__(self, orientation, offset, gap = 0):
         super().__init__()
         if orientation == "Upside":
             self.image = pygame.image.load("graphics/PipeUpSide.png").convert_alpha()
@@ -88,7 +90,7 @@ class Pipe(pygame.sprite.Sprite):
         elif orientation == "Downside":
             self.image = pygame.image.load("graphics/PipeDownSide.png")
             #200
-            yPos = 50 + offset
+            yPos = 200 + offset - gap
 
         self.image = pygame.transform.scale(self.image, (78 ,405))
         self.rect = self.image.get_rect(midbottom = (900 , yPos))
