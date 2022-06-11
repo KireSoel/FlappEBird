@@ -10,9 +10,6 @@ flapp_sfx = mixer.Sound("media/Flapp.mp3")
 class Bird(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        mixer.music.load("media/NormalTheme.mp3")
-        mixer.music.set_volume(0.75)
-        # mixer.music.play(-1)
 
         bird_flapp1 = pygame.image.load("graphics/FlappE_1.png").convert_alpha()
         bird_flapp2 = pygame.image.load("graphics/FlappE_2.png").convert_alpha()
@@ -22,8 +19,9 @@ class Bird(pygame.sprite.Sprite):
 
         self.bird_active = True
         self.crash_bool = False
+        self.gameStart = False
 
-        self.gravity = 2
+        self.gravity = 0
         self.image = self.bird_flapp[self.bird_index]
         self.image = pygame.transform.scale(self.image, (51, 36))
         self.rect = self.image.get_rect(midbottom = (250, 175))
@@ -33,12 +31,19 @@ class Bird(pygame.sprite.Sprite):
             if event.type == pygame.KEYDOWN and self.bird_active:
                 if event.key == pygame.K_SPACE:
                     self.gravity = -6
+                    self.gameStart = True
                     flapp_sfx.stop()
                     flapp_sfx.play()
+            elif event.type == pygame.MOUSEBUTTONDOWN and self.bird_active:
+                self.gravity = -6
+                self.gameStart = True
+                flapp_sfx.stop()
+                flapp_sfx.play()
 
     def logic(self):
         self.rect.y += self.gravity
-        self.gravity += 0.38
+        if self.gameStart: self.gravity += 0.38
+
         if self.gravity > 10:
             self.gravity = 10
 
@@ -52,7 +57,7 @@ class Bird(pygame.sprite.Sprite):
         #Crash sound bool
         if self.bird_active == False and self.crash_bool == False:
             crash_sfx.play()
-            mixer.music.stop()
+            mixer.music.pause()
             self.crash_bool = True
 
     def animation(self):
@@ -113,3 +118,34 @@ class Pipe(pygame.sprite.Sprite):
     def update(self, gameActive):
         self.logic()
         self.checkCollision(gameActive)
+
+
+class Button():
+    def __init__(self, image, x, y, onClick="", optImage=""):
+        super().__init__()
+        self.NormalButton = pygame.image.load(image).convert_alpha()
+        self.ButtonRect = self.NormalButton.get_rect(center=(x, y))
+        if len(onClick) > 0:
+            self.onClickFunct = onClick
+        else:
+            self.onClickFunct = print(f"No Function Addeed [ImageRef:{image}]")
+        if len(optImage) > 0:
+            self.OptButton = pygame.image.load(optImage).convert_alpha()
+
+
+    def checkInput(self, events):
+        for e in events:
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                if e.button == 1:
+                    if self.ButtonRect.collidepoint(e.pos):
+                        print("MouseClicked")
+
+
+
+    def drawInScreen(self, screen):
+        screen.blit(self.NormalButton, self.ButtonRect)
+
+    def update(self, screen, events, visible):
+        if visible:
+            self.checkInput(events)
+            self.drawInScreen(screen)
